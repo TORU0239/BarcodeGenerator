@@ -1,12 +1,9 @@
 package sg.toru.barcodegenerator
 
-import android.graphics.DiscretePathEffect
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.google.zxing.BarcodeFormat
@@ -29,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         submitBtn = findViewById(R.id.btn_generate_code)
         submitBtn.setOnClickListener {
-            test1()
+            triggerBarcodeGenerator()
         }
 
         ed = findViewById(R.id.ed_number)
@@ -44,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun test1(){
+    private fun triggerBarcodeGenerator(){
         coroutineScope.launch{
             val test = generateBarcode(ed.text.toString()).await()
             test?.let { barcode ->
