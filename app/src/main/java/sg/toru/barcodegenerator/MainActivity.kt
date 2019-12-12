@@ -1,5 +1,6 @@
 package sg.toru.barcodegenerator
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -43,17 +44,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun triggerBarcodeGenerator(){
         coroutineScope.launch{
-            val test = generateBarcode(ed.text.toString()).await()
+            val test = generateBarcode(ed.text.toString())
             test?.let { barcode ->
                 barcodeImg.setImageBitmap(barcode)
             }
         }
     }
 
-    private fun generateBarcode(digits:String) = coroutineScope.async {
+    private suspend fun generateBarcode(digits:String) = coroutineScope.async {
         val multiFormatWriter = MultiFormatWriter()
         try {
-            val barcodeMatrix = multiFormatWriter.encode(digits, BarcodeFormat.CODE_128, 300, 200)
+            val barcodeMatrix = multiFormatWriter.encode(digits, BarcodeFormat.CODE_128, dpToPx(129), dpToPx(28))
             val barcodeEncoder = BarcodeEncoder()
             return@async barcodeEncoder.createBitmap(barcodeMatrix)
         }
@@ -61,5 +62,11 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return@async null
+    }.await()
+
+    //app:layout_constraintDimensionRatio="h,129:28"
+
+    fun dpToPx(dp: Int): Int {
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
 }
